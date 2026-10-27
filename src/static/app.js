@@ -12,6 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const response = await fetch("/activities", { cache: "no-store" });
       const activities = await response.json();
+      const selectedActivity = activitySelect.value;
 
       if (generation !== activityRefreshGeneration) {
         return;
@@ -80,6 +81,8 @@ document.addEventListener("DOMContentLoaded", () => {
         option.textContent = name;
         activitySelect.appendChild(option);
       });
+
+      activitySelect.value = selectedActivity;
     } catch (error) {
       if (generation !== activityRefreshGeneration) {
         return;
