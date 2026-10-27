@@ -3,12 +3,19 @@ document.addEventListener("DOMContentLoaded", () => {
   const activitySelect = document.getElementById("activity");
   const signupForm = document.getElementById("signup-form");
   const messageDiv = document.getElementById("message");
+  let activityRefreshGeneration = 0;
 
   // Function to fetch activities from API
   async function fetchActivities() {
+    const generation = ++activityRefreshGeneration;
+
     try {
       const response = await fetch("/activities", { cache: "no-store" });
       const activities = await response.json();
+
+      if (generation !== activityRefreshGeneration) {
+        return;
+      }
 
       // Clear loading message
       activitiesList.replaceChildren();
@@ -74,6 +81,10 @@ document.addEventListener("DOMContentLoaded", () => {
         activitySelect.appendChild(option);
       });
     } catch (error) {
+      if (generation !== activityRefreshGeneration) {
+        return;
+      }
+
       activitiesList.innerHTML = "<p>Failed to load activities. Please try again later.</p>";
       console.error("Error fetching activities:", error);
     }
